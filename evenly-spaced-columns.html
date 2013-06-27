@@ -1,0 +1,77 @@
+<!doctype HTML>
+<html>
+	<head>
+		<title>Evenly Spaced Columns</title>
+		<style>
+			.evenly-spaced-columns {
+				display:block;
+				margin:0;
+				padding:0;
+				display:-webkit-box;
+				display:-moz-box;
+				display:-webkit-flex;
+				-webkit-flex-direction:row;
+				display:flex;
+				flex-direction:row;
+			}
+			.evenly-spaced-columns__column {
+				margin:0;
+				padding:0;
+				float:left;
+				position:relative;
+				-webkit-flex:none;
+				flex:none;
+			}
+			.evenly-spaced-columns__spacer {
+				float:left;
+				display:-moz-box;
+				-moz-box-flex:1;
+				display:-webkit-box;
+				-webkit-box-flex:1;
+				-webkit-flex:1 1 auto;
+				flex:1 1 auto;
+			}
+		</style>
+		<script src="http://cdnjs.cloudflare.com/ajax/libs/modernizr/2.6.2/modernizr.min.js"></script>
+	</head>
+	<body>
+		<ul class="evenly-spaced-columns">
+			<li class="evenly-spaced-columns__column">Column One</li>
+			<li class="evenly-spaced-columns__spacer"></li>
+			<li class="evenly-spaced-columns__column">Column Two is Two</li>
+			<li class="evenly-spaced-columns__spacer"></li>
+			<li class="evenly-spaced-columns__column">Column Three</li>
+			<li class="evenly-spaced-columns__spacer"></li>
+			<li class="evenly-spaced-columns__column">Column Four</li>
+			<li class="evenly-spaced-columns__spacer"></li>
+			<li class="evenly-spaced-columns__column">Column Five is Five</li>
+		</ul>
+		<script type="text/javascript" src="http://cdnjs.cloudflare.com/ajax/libs/require.js/2.1.5/require.min.js"></script>
+		<script type="text/javascript">
+			requirejs.config({
+				paths: {
+					lib: '../js-libs',
+					underscore: 'http://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.4.4/underscore-min',
+					jquery: 'http://cdnjs.cloudflare.com/ajax/libs/require-jquery/0.25.0/require-jquery.min'
+				}
+			});
+			require(['jquery','underscore','lib/jquery-functions'], function(jquery, underscore, jqFn) {
+				var $columnContainers = $('.evenly-spaced-columns');
+				function expandSpacers() {
+					$columnContainers.each(function(i, el) {
+						var $container = $(el), $cols, $sps, tw;
+						if ($container.css('display') !== 'block') {
+							return;
+						}
+						$cols = $container.children('.evenly-spaced-columns__column');
+						$sps = $container.children('.evenly-spaced-columns__spacer');
+						tw = _.reduce($cols, function(w, el) { return w + el.offsetWidth; }, 0);
+						$sps.css('width', (($container.width() - tw) / $sps.length) + 'px');
+					});
+				}
+				$(window).on('resize', expandSpacers);
+				expandSpacers();
+			});
+		</script>
+	</body>
+</html>
